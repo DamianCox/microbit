@@ -1,0 +1,12 @@
+if (/,root-ptr,/.test(localStorage.litePermissions) && /^[a-z]+$/.test($('#editpage').attr("data-scriptid"))) $('#editpage').css("display","");
+else $('#editpage').remove();
+
+
+["en","cy"].forEach(function(lang){
+    $(".lang-" + lang).click(function() {
+        document.cookie = "TD_LANG=" + lang + "; path=/; secure; expires=" + new Date(Date.now()+365*24*3600*1000).toUTCString() + 
+            "; domain=" + document.location.href.replace(/^https?:\/\//, "").replace(/\/.*/, "")
+        window.location.reload();
+        return false
+    })
+})

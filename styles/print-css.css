@@ -1,0 +1,107 @@
+.md-tutorial h4
+{
+    font-size:1.2em;
+    font-family: "GT Walsheim Bold", "GTWalsheim", sans-serif;
+}
+
+@media print
+{    
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
+    .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12{
+  float: left;
+}
+body, h1, h2, h3, ol, ul, div, .md-tutorial {     width: 100%;     border: 0;       padding: 0;     overflow: visible; height:auto; }
+
+.md-box-card{
+    margin-bottom:10px;
+}
+
+.md-img{
+    margin:0 auto;
+    padding:0;
+    clear:both;
+    display:inline-block;
+}
+
+.col-md-12, .md-box-card {
+  width: 100%;
+}
+.col-md-11 {
+  width: 91.66666666666666%;
+}
+.col-md-10 {
+  width: 83.33333333333334%;
+}
+.col-md-9 {
+  width: 75%;
+}
+.col-md-8 {
+  width: 66.66666666666666%;
+}
+.col-md-7 {
+  width: 58.333333333333336%;
+}
+.col-md-6 {
+  width: 50%;
+}
+.col-md-5 {
+  width: 41.66666666666667%;
+}
+.col-md-4 {
+  width: 33.33333333333333%;
+ }
+ .col-md-3 {
+   width: 25%;
+ }
+ .col-md-2 {
+   width: 16.666666666666664%;
+ }
+ .col-md-1 {
+  width: 8.333333333333332%;
+ }
+ 
+ .content-block__header{
+     background-color:#000;
+     
+ }
+  
+ul {
+    padding-left:2em;
+    
+}
+
+.md-img-inner svg {
+  height: 7em;
+  margin: 0.5em 0.5em 0em 0.5em;
+}
+.md-img-inner svg > path.biton {
+  stroke:black;
+}
+.md-img-inner svg > path.bitoff {
+  stroke:black;
+  fill:transparent;
+}
+
+.md-snippet, .code-highlight {
+    margin:0;
+    overflow:hidden;
+}
+
+.md-snippet{
+    margin-bottom:16px;
+    
+}
+br:after {
+    border-bottom:1px dashed black;
+    content: "";
+    display: block;
+    height:1em;
+}
+ 
+ a.md-external-link:link:after, a.md-external-link:visited:after { content: ' (' attr(href) ') '; font-size: 80%; } 
+
+
+}

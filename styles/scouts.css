@@ -1,0 +1,104 @@
+
+.welcome {
+
+}
+#codingStationTitle {
+  font-size: 1.5em;
+}
+#codingStationOrdinal {
+  font-size: 4em;
+  padding: 0 0 0 10px;
+}
+
+.clock {
+  transform: scale(0.5);
+}
+
+.schedule {
+  list-style:none;
+  margin: 0;
+  padding: 0;
+}
+.schedule-item {
+
+}
+.schedule-item-slot {
+  display: inline-block;
+  width: 40%;
+}
+.schedule-item-title {
+  display: inline-block;
+  width: auto;
+  font-size: 1.75em;
+}
+.editor-launcher {
+  position: absolute;
+  top: 18px;
+  right: 0;
+  background: #3498db;
+  background-image: linear-gradient(to bottom, #3498db, #2980b9);
+  border-radius: 28px;
+  font: normal 16px "Helvetica Neue Bold", "Helvetica Neue", sans-serif;
+  color: #ffffff;
+  font-size: 16px;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+}
+
+.editor-launcher:hover {
+  background: #3cb0fd;
+  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+  text-decoration: none;
+}
+
+pre {
+  font-family: "Helvetica Neue Regular", "Helvetica Neue", sans-serif;
+  font-size: 1.5em;
+
+}
+.activity-item {
+  font-size: 2em;
+  vertical-align: middle;
+}
+.mega-check {
+  width: 20px;
+  position: relative;
+  margin: 20px 50px auto auto;
+  display: inline-block;
+}
+.mega-check label {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: -webkit-linear-gradient(top, #222222 0%, #45484d 100%);
+  background: linear-gradient(to bottom, #222222 0%, #45484d 100%);
+  border-radius: 4px;
+  box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.4);
+}
+.mega-check label:after {
+  content: '';
+  width: 20px;
+  height: 10px;
+  position: absolute;
+  top: 11px;
+  left: 10px;
+  border: 3px solid #fcfff4;
+  border-top: none;
+  border-right: none;
+  background: transparent;
+  opacity: 0;
+  -webkit-transform: rotate(-45deg);
+          transform: rotate(-45deg);
+}
+.mega-check label:hover::after {
+  opacity: 0.3;
+}
+.mega-check input[type=checkbox] {
+  visibility: hidden;
+}
+.mega-check input[type=checkbox]:checked + label:after {
+  opacity: 1;
+}
