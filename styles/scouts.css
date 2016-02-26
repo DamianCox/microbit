@@ -56,10 +56,26 @@ pre {
   font-size: 1.5em;
 
 }
+
+
 .activity-item {
   font-size: 2em;
   vertical-align: middle;
 }
+
+a.activity-link {
+  font-size: 0.6em;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+a.activity-link:hover {
+  text-decoration: none;
+}
+
+
+
+
 .mega-check {
   width: 20px;
   position: relative;
