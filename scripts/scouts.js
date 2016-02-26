@@ -2,8 +2,8 @@
 var PIN = "pass"
 var SEED = 100;
 
-
-document.getElementById('codingStationOrdinal').innerText = document.location.search.split('=')[1];
+var stationID = document.location.search.split('=')[1];
+if (stationID) document.getElementById('codingStationOrdinal').innerText = stationID;
 
 // window.requestFullscreen;
 

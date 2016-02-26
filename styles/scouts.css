@@ -38,10 +38,10 @@
   background: #3498db;
   background-image: linear-gradient(to bottom, #3498db, #2980b9);
   border-radius: 28px;
-  font: normal 16px "Helvetica Neue Bold", "Helvetica Neue", sans-serif;
+  font: normal 14px "Helvetica Neue Bold", "Helvetica Neue", sans-serif;
   color: #ffffff;
-  font-size: 16px;
-  padding: 10px 20px 10px 20px;
+  font-size: 14px;
+  padding: 8px 16px;
   text-decoration: none;
 }
 
@@ -58,6 +58,7 @@ pre {
 }
 
 
+
 .activity-item {
   font-size: 2em;
   vertical-align: middle;
@@ -67,10 +68,12 @@ a.activity-link {
   font-size: 0.6em;
   font-weight: bold;
   text-decoration: underline;
+  color: #22cc22
 }
 
 a.activity-link:hover {
   text-decoration: none;
+  font-size: 1.2em;
 }
 
 
