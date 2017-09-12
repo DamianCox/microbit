@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<title>BBC Recommendation Tutorial </title>
+<head>
+<script src="movies_denormalised.js"></script>
+<script> 
+// createUsersViewCount: Prepare the list of qualified users
+function createUsersViewCount (seen_movies, common_threshold) {
+  var usersViewsCount = [];
+  var retainedUsers = [];
+  
+  seen_movies.map(function(movie){
+    movies_data.map(function(row) {
+	  if (movie == row[2]) { // 3rd column is movie title
+	    updateUsersViewsCount(row[0], row[1], row[4]);
+	  }
+	})
+  });
+  averageUsersRating();
+  computeUsersNbViewedFilms();
+  // console.log(usersViewsCount);
+  
+  return(retainedUsers);
+  
+  // Helper functions  
+  function updateUsersViewsCount(userId, movieId, movieRating) {
+    var found=false;
+	if (movieRating == "undefined") {
+	  movieRating = 2.5; // No prior knowledge.
+	}
+	for (var index = 0; index < usersViewsCount.length; index++) {
+	  if (usersViewsCount[index]["userId"] == userId) {
+	    found = true;
+	    var newMovie = usersViewsCount[index]["movieIds"].reduce(function(acc, id){
+		  if (id == movieId) {
+		    return(false);
+		  } else {
+		    return(acc);
+		  }
+		}, true);
+		if (newMovie) {
+		  usersViewsCount[index]["count"] = usersViewsCount[index]["count"] + 1;
+		  usersViewsCount[index]["ratings"] = usersViewsCount[index]["ratings"] + movieRating;
+		  usersViewsCount[index]["movieIds"].push(movieId);
+		}
+		break;
+	  }
+	}
+	if (found == false) {
+	  usersViewsCount.push({userId: userId, count: 1, ratings: movieRating, userTotalView: 0, movieIds: [movieId]});
+	}
+  }
+  function averageUsersRating() {
+    usersViewsCount.forEach(function(user, index) {
+	  usersViewsCount[index]["ratings"] =  user["ratings"] / user["count"];
+	})
+  }
+  function computeUsersNbViewedFilms() {
+    usersViewsCount.forEach(function(user, index) {
+	  movies_data.forEach(function(movie) {
+	    if (movie[0] == user["userId"]) {
+		  usersViewsCount[index]["userTotalView"] = usersViewsCount[index]["userTotalView"] + 1;
+		}
+	  })
+	})
+	// Then compute ratio of common movies over total viewed movies
+    usersViewsCount.forEach(function(user, index) {
+	  usersViewsCount[index]["userTotalView"] =  user["count"] / user["userTotalView"];
+	  if (usersViewsCount[index]["userTotalView"] > common_threshold) {
+	    retainedUsers.push(usersViewsCount[index])
+	  }
+	})
+  }
+}
+
+function remove_cross_duplicates(array1, array2, compare) {
+  var new_list = [];
+  array1.forEach(function(item) {
+    var isPresent = array2.reduce(function(acc, entry){
+	  if (compare(item, entry)) {
+	    return (true);
+	  } else {
+	    return(acc);
+	  }
+	},false);
+	if (isPresent == false) {
+	  new_list.push(item);
+	}
+  });
+  return(new_list);
+}
+
+function remove_duplicates(array, compare) {
+  var new_list = [];
+  array.forEach(function(item) {
+    var isPresent = new_list.reduce(function(acc, entry){
+	  if (compare(item, entry)) {
+	    return (true);
+	  } else {
+	    return(acc);
+	  }
+	},false);
+	if (isPresent == false) {
+	  new_list.push(item);
+	}
+  });
+  return(new_list);
+}
+
+function rankingAlgo(retainedUsers) {
+  retainedUsers.sort(function(a, b){return b["userTotalView"]-a["userTotalView"]});
+  // build list of unique movies + score value for each user
+  retainedUsers = retainedUsers.map(function (item, index) {
+    var entry = {userId: item["userId"], movieIds:[]};
+	movies_data.map(function(row) {
+	  var user=row[0], movie=row[1], title=row[2], rating=row[4];
+	  if (user == item["userId"]) {
+	    var newMovie = entry["movieIds"].reduce(function(acc, elt){
+		  if (elt["id"] == movie) {
+		    return(false);
+		  } else {
+		    return(acc);
+		  }
+		}, true);
+	    if (newMovie) {
+		  if (rating == "undefined") {
+		    rating = 2.5; // No prior knowledge.
+		  }
+		  entry["movieIds"].push({id: movie, title: title, rating: rating * 10/(index+10)}) // rating slow decay with rank of user
+		}
+	  }
+	})
+	return (entry);
+  });
+  
+  retainedMovies = retainedUsers.reduce(function(acc, user){
+    return(acc.concat(user["movieIds"]))
+  },[]);
+  
+  retainedMovies.sort(function(a, b){return b["rating"]-a["rating"]});
+  
+  retainedMovies = remove_duplicates(retainedMovies, function(a,b){
+    return(a["id"]==b["id"]);
+  });
+
+  return(retainedMovies)
+}
+
+// Main entry function
+function button_clicked ( )
+{
+ var viewed_films = document.getElementById('viewed_films').value;
+ var common_threshold = document.getElementById('commonality_threshold').value / 100;
+ viewed_films = viewed_films.split("\n");
+ var retainedUsers = createUsersViewCount(viewed_films, common_threshold); // As well as total number of film viewed for these common users
+ retainedMovies = rankingAlgo(retainedUsers);
+ 
+ var retainedMovies = remove_cross_duplicates(retainedMovies, viewed_films, function(a,b){
+   return(a.title == b); });
+  
+ // Generate table of results .. dirty way
+ var result_string = "<table id=\"hor-minimalist-a\" summary=\"Recommended movies\"><thead>" + 
+                   "<tr> <th scope=\"col\">Movie</th><th scope=\"col\">Score</th></tr></thead>" + 
+				   "<tbody>";
+ result_string = result_string + retainedMovies.reduce(function(acc, entry){
+   var rating = Math.round(100*entry.rating/5); // Score
+   var row = "<tr><td>" + entry["title"] + "</td><td>" + rating + "%</td></tr>";
+   return(acc +  row );
+ }, ""); 
+ result_string = result_string + "</tbody></table>";
+ document.getElementById("result_area").innerHTML = result_string;
+ 
+ console.log(retainedMovies);
+}
+</script>
+<style> 
+body
+{
+    line-height: 1.6em;
+}
+#commonality_threshold {
+    font-family: Sans-Serif;
+    color: #000;
+}
+h1, h2, h3, textarea, #recommend_btn {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    color: #000;
+}
+h1 {
+    margin-left: 150px;
+}
+h2, h3, textarea, #recommend_btn {
+    margin-left: 45px;
+}
+#recommend_btn, #commonality_threshold {
+    text-align: center;
+	border-radius: 7px;
+}
+h1, h2, h3 {
+    padding-left:    8px;
+}
+h1 {
+    font-size: 24px;
+}
+h2 {
+    font-size: 20px;
+}
+h3 {
+    font-size: 16px;
+	font-style:  italic;
+	font-weight: normal;
+	color: #000;
+}
+th {
+  text-align: left;
+}
+#hor-minimalist-a
+{
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 12px;
+    background: #fff;
+    margin: 45px;
+    width: 50%;    
+	border-collapse: collapse;
+    text-align: left;
+}
+#hor-minimalist-a th
+{
+    font-size: 16px;
+    font-weight: bold;
+    background: #fafafa;
+    color: #057;
+    padding: 10px 8px;
+    border-bottom: 2px solid #6678b1;
+}
+#hor-minimalist-a td
+{
+    color: #000;
+    padding: 9px 8px 0px 8px;
+}
+#hor-minimalist-a tbody tr:hover td
+{
+    color: #000;
+}
+</style>
+
+</head>
+
+<body>
+<img src="logo.jpg" />
+<h1>Movie Recommendations</h1>
+<br/>
+<form>
+  <h3>Movies you have seen:</h3> 
+  <textarea id="viewed_films" rows="7" cols="80"></textarea>
+  <h3>Commonality threshold:
+  <input type="text" id="commonality_threshold" name="myPercent" style="width:50px"/><span id="percent"> %</span>
+  <button id="recommend_btn" type="button" onclick="button_clicked()">Recommend Movies</button> </h3> 
+</form>
+
+<div id="result_area"></div>
+
+</body>
+</html>
